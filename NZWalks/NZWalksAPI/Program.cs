@@ -19,6 +19,7 @@ builder.Services.AddDbContext<NzWalksDBContext>(options =>
 });
 builder.Services.AddScoped<IRepository, RegionRepository>();
 builder.Services.AddScoped<IWalksRepository, WalksRepository>();
+builder.Services.AddScoped<IWalkDifficulty, WalkDifficultyRepository>();
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 //Automapper Configuration

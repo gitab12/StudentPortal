@@ -23,8 +23,8 @@ namespace NZWalksAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRegion()
         {
-            var walksdata = await repository.GetAll();
-            var regionsDTO = mapper1.Map<List<Models.DTO.RegionDTO>>(walksdata);
+            var regiondata = await repository.GetAll();
+            var regionsDTO = mapper1.Map<List<Models.DTO.RegionDTO>>(regiondata);
             return Ok(regionsDTO);
         }
 
@@ -43,6 +43,39 @@ namespace NZWalksAPI.Controllers
             return Ok(regionDtoid);
 
         }
+        [HttpPost]
+        public async Task<IActionResult> AddRegion(Models.DTO.AddRegionRequest rego)
+        {
+            //request to domain model
+            var regiondomian = new Models.Domain.Region()
+            {
+                Code = rego.Code,
+                Area = rego.Area,
+                Lat = rego.Lat,
+                Long = rego.Long,
+                Name = rego.Name,
+                Population = rego.Population
+            };
+
+            //pass details to respository
+
+            regiondomian = await repository.AddRegions(regiondomian);
+
+            //convert back to DTO
+            var regionDTO = new Models.DTO.RegionDTO()
+            {
+                Code = regiondomian.Code,
+                Area = regiondomian.Area,
+                Lat = regiondomian.Lat,
+                Long = regiondomian.Long,
+                Name = regiondomian.Name,
+                Population = regiondomian.Population
+
+            };
+            //GetAllRegion is a ActionName which is defined as a attribuite in Getall method
+            return CreatedAtAction(nameof(GetAllRegion), new { id = regionDTO.Id }, regionDTO);
+
+        }
 
 
         [HttpPut]
@@ -51,7 +84,7 @@ namespace NZWalksAPI.Controllers
         {
 
             //convert DTO to Domain Models
-            var regiondomian = new Models.Region()
+            var regiondomian = new Models.Domain.Region()
             {
                 Code = rego.Code,
                 Area = rego.Area,
@@ -69,7 +102,7 @@ namespace NZWalksAPI.Controllers
             }
             var regionDTO = new Models.DTO.RegionDTO()
             {
-                Id= regiondomian.Id,
+                Id = regiondomian.Id,
                 Code = regiondomian.Code,
                 Area = regiondomian.Area,
                 Lat = regiondomian.Lat,
@@ -107,38 +140,6 @@ namespace NZWalksAPI.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddRegion(Models.DTO.AddRegionRequest rego)
-        {
-            //request to domain model
-            var regiondomian = new Models.Region()
-            {
-                Code = rego.Code,
-                Area = rego.Area,
-                Lat = rego.Lat,
-                Long = rego.Long,
-                Name = rego.Name,
-                Population = rego.Population
-            };
-
-            //pass details to respository
-
-          regiondomian = await  repository.AddRegions(regiondomian);
-
-            //convert back to DTO
-            var regionDTO = new Models.DTO.RegionDTO()
-            {
-                Code = regiondomian.Code,
-                Area = regiondomian.Area,
-                Lat = regiondomian.Lat,
-                Long = regiondomian.Long,
-                Name = regiondomian.Name,
-                Population = regiondomian.Population
-
-            };
-            //GetAllRegion is a ActionName which is defined as a attribuite in Getall method
-            return CreatedAtAction(nameof(GetAllRegion),new { id= regionDTO.Id}, regionDTO);
-            
-        }
+       
     }
 }

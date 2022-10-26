@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NZWalksAPI.DBData;
 using NZWalksAPI.Models;
 using NZWalksAPI.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,9 @@ builder.Services.AddDbContext<NzWalksDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalks"));
 });
 builder.Services.AddScoped<IRepository, RegionRepository>();
-
+builder.Services.AddScoped<IWalksRepository, WalksRepository>();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 //Automapper Configuration
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

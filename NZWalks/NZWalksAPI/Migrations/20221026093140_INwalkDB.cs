@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NZWalksAPI.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class INwalkDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,7 +44,7 @@ namespace NZWalksAPI.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Lenght = table.Column<double>(type: "float", nullable: false),
+                    Length = table.Column<double>(type: "float", nullable: false),
                     RegionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WalkDifficultyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },

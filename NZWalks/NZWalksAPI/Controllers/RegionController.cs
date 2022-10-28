@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NZWalksAPI.Models;
 using NZWalksAPI.Models.DTO;
 using NZWalksAPI.Repositories;
@@ -46,6 +47,10 @@ namespace NZWalksAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegion(Models.DTO.AddRegionRequest rego)
         {
+            if(!ValidationAddRegionRequest(rego))
+            {
+                return BadRequest(ModelState);
+            }
             //request to domain model
             var regiondomian = new Models.Domain.Region()
             {
@@ -83,6 +88,11 @@ namespace NZWalksAPI.Controllers
         public async Task<IActionResult> UpdateRegionById([FromRoute] Guid id,[FromBody] Models.DTO.UpdateRegionRequest rego)
         {
 
+
+            if (!ValidationUpdateRegionrequest(rego))
+            {
+                return BadRequest(ModelState);
+            }
             //convert DTO to Domain Models
             var regiondomian = new Models.Domain.Region()
             {
@@ -140,6 +150,89 @@ namespace NZWalksAPI.Controllers
 
         }
 
-       
+        #region private methods
+
+        private bool ValidationAddRegionRequest(Models.DTO.AddRegionRequest rego)
+        {
+            if(rego == null)
+            {
+                ModelState.AddModelError(nameof(rego),
+                    $"Add region Data is required");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(rego.Name))
+            {
+                ModelState.AddModelError(nameof(rego.Name), 
+                    $"{nameof(rego.Name)}cannot be null or empty or whitespace");
+
+
+            }
+            if (string.IsNullOrWhiteSpace(rego.Code))
+            {
+                ModelState.AddModelError(nameof(rego.Code), 
+                    $"{nameof(rego.Code)} Cannot be null or empty or whitespace");
+            }
+            if(rego.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(rego.Area),
+                    $"{nameof(rego.Area)} Area cantbe less than Zero");
+            }
+            if(rego.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(rego.Long),
+                    $"{nameof(rego.Long)} longitute cant be less than zero");
+            }
+
+            if(rego.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(rego.Lat),$"{nameof(rego.Lat)} Latitude cant be less than zero");
+            }
+            if(rego.Population <=0)
+            {
+                ModelState.AddModelError(nameof(rego.Population),
+                    $"{nameof(rego.Population)} Population cannot be less than zero");
+            }
+
+            if(ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+
+        }
+        #endregion
+        private bool ValidationUpdateRegionrequest(Models.DTO.UpdateRegionRequest urego)
+        {
+            if(urego == null)
+            {
+                ModelState.AddModelError(nameof(urego), $"{nameof(urego)} Required all fields");
+            }
+
+            if (string.IsNullOrWhiteSpace(urego.Name)) { 
+            ModelState.AddModelError(nameof(urego.Name), $"{nameof(urego.Name)} Name is required");
+            }
+            if (string.IsNullOrWhiteSpace(urego.Code))
+            {
+                ModelState.AddModelError(nameof(urego.Code), $"{nameof(urego.Code)} Code is required");
+            }
+               if(urego.Lat <= 0) {  
+             ModelState.AddModelError(nameof(urego.Lat),  $"{nameof(urego.Lat)} lat should not be less than or equal to zero");
+            }
+               if(urego.Long <=0) { 
+            ModelState.AddModelError(nameof(urego.Long), $"{nameof(urego.Long)} Long should not be less than or equal to zero");
+            }
+
+            if (urego.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(urego.Population), $"{nameof(urego.Population)} Population should not be less than or equal to zero");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
     }
 }
